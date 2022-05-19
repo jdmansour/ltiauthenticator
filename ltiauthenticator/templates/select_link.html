@@ -1,0 +1,172 @@
+{% extends "templates/page.html" %}
+{% block main %}
+
+<div class="container">
+
+  <h1>Create Link</h1>
+  <p>You are about to create a link to this JupyterHub in your LMS '{{ tool_consumer_instance_name }}'.</p>
+
+  <h2>Option 1: <small>Open JupyterHub</small></h2>
+
+  <form class="form-inline" action="{{ return_url }}" method="post" encType="application/x-www-form-urlencoded">
+    {% for key, value in response_params %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Create Link</button>
+
+  </form>
+
+  <h2>Option 2: <small>Open JupyterHub and check out Git repository</small></h2>
+
+  <p>Use nbgitpuller to check out a Git repository automatically.</p>
+
+<script>
+
+var options = {
+  classic: {
+    getUrlPath: function(path) {
+      return 'tree/' + path;
+    },
+  },
+  retrolab: {
+    getUrlPath: function(path) {
+      return 'retro/tree/' + path;
+    },
+  },
+  jupyterlab: {
+    getUrlPath: function(path) {
+      return 'lab/tree/' + path;
+    },
+  },
+  rstudio: {
+    getUrlPath: function(path) {
+      return 'rstudio/';
+    },
+  },
+  shiny: {
+    getUrlPath: function(path) {
+      return 'shiny/' + path;
+    },
+  },
+  custom: {
+    getUrlPath: function(path) {
+      return document.getElementById("appPath").value;
+    },
+  }
+}
+
+  function app_change() {
+    var app = document.getElementById("app").value;
+    var seAppPath = document.getElementById("appPath");
+    seAppPath.disabled = (app != "custom");
+
+    var repo = document.getElementById("repo").value;
+    var path = repo.split('/').pop();
+    var filepath = document.getElementById("filepath").value;
+    var urlpath = options[app].getUrlPath(path + '/' + filepath);
+    //seAppPath.value = urlpath;
+    pathToOpen.innerText = urlpath;
+    document.getElementById("urlpath").value = urlpath;
+  }
+  // call app_change when the document is loaded
+  document.addEventListener("DOMContentLoaded", app_change);
+
+</script>
+
+  <!-- TODO: what if we use an URL prefix? -->
+  <form class="form-horizontal needs-validation" action="/hub/lti11/create_link" method="post">
+    <input type="hidden" name="oauth_consumer_key" value="{{ oauth_consumer_key }}">
+    <input type="hidden" name="content_item_return_url" value="{{ content_item_return_url }}">
+
+    <div class="row form-group">
+      <label for="repo" class="col-sm-2 control-label">Git Repository URL</label>
+      <div class="col-sm-6">
+        <input class="form-control" type="text" name="repo" id="repo" placeholder="https://github.com/example/test"
+          oninput="app_change()" required pattern="((git|https?)://.+|git@.+:.+)"
+          value="https://github.com/KI-Campus/Datengeschichten">
+        <!-- <span class="help-block">
+          Must be a valid git URL
+        </span> -->
+        <small class="form-text text-muted" id="env-repo-help-text" hidden="true">
+          The environment repository must have
+          <a href="https://github.com/jupyterhub/nbgitpuller">nbgitpuller</a> installed.
+        </small>
+      </div>
+      <div class="col-sm-4">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <span class="input-group-text" id="branch-prepend-label">branch</span>
+          </div>
+          <input name="branch" id="branch" type="text" class="form-control" value="main" aria-label="Branch Name" aria-describedby="branch-prepend-label">
+        </div>
+        <small class="form-text text-muted">
+            Use <code>main</code> instead of <code>master</code> for
+            <a href="https://github.blog/changelog/2020-10-01-the-default-branch-for-newly-created-repositories-is-now-main/">
+            new GitHub repositories</a>
+        </small>
+        <!-- <span class="help-block">
+            Must specify a branch name
+        </span> -->
+      </div>
+    </div>
+
+    <div class="form-group row" id="filepath-container">
+      <label for="filepath" class="col-sm-2 control-label">File to open</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" id="filepath" placeholder="index.ipynb"
+          oninput="app_change()">
+        <small class="form-text text-muted">
+          This file or directory from within the repo will open when user clicks the link.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group" id="app-container">
+      <div class="col-sm-2 control-label">
+        <label for="app" class=>Application to Open</label>
+        <small class="form-text text-muted">
+        </small>
+      </div>
+      <div class="col-sm-4">
+        <select class="form-control" id="app" onchange="app_change()">
+          <option value="classic">Classic Jupyter Notebook</option>
+          <option value="retrolab">RetroLab</option>
+          <option value="jupyterlab">JupyterLab</option>
+          <option value="rstudio">RStudio</option>
+          <option value="shiny">Shiny</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="col-sm-2 control-label">
+        <label for="appPath" class=>Custom path</label>
+      </div>
+      <div class="col-sm-4">
+        <input class="form-control" type="text" id="appPath" placeholder="lab/tree"
+          oninput="app_change()">
+        <small class="form-text text-muted">
+          Specify a custom path to open when the user clicks the link.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Resulting path</label>
+      <div class="col-sm-10">
+        <p class="form-control-static" id="pathToOpen">-</p>
+      </div>
+    </div>
+
+    <input type="hidden" name="urlpath" id="urlpath" value="">
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">Create Link</button>
+      </div>
+    </div>
+
+  </form>
+
+  <h3>Debugging Information <small>LTI Vars</small></h3>
+  <pre>{{ lti_vars_str }}</pre>
+</div>
+{% endblock %}

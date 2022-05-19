@@ -8,7 +8,7 @@ from tornado.web import HTTPError
 from traitlets import CaselessStrEnum, Dict, Unicode
 
 from ..utils import convert_request_to_dict, get_browser_protocol
-from .handlers import LTI11AuthenticateHandler, LTI11ConfigHandler
+from .handlers import LTI11AuthenticateHandler, LTI11ConfigHandler, LTI11CreateLinkHandler
 from .validator import LTI11LaunchValidator
 
 
@@ -109,6 +109,7 @@ class LTI11Authenticator(Authenticator):
         return [
             ("/lti/launch", LTI11AuthenticateHandler),
             ("/lti11/config", LTI11ConfigHandler),
+            ("/lti11/create_link", LTI11CreateLinkHandler),
         ]
 
     async def authenticate(self, handler: BaseHandler, data: dict = None) -> dict:

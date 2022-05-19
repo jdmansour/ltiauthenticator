@@ -1,0 +1,18 @@
+{% extends "templates/page.html" %}
+{% block main %}
+
+<div class="container">
+  <h1>Create Link</h1>
+  <p>Click this button to insert the link you have requested into your LMS. This we be automatic in the final version.</p>
+
+  <form class="form-inline" action="{{ return_url }}" method="post" encType="application/x-www-form-urlencoded">
+    {% for key, value in response_params %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Create Link</button>
+  </form>
+
+  <h3>LTI Vars</h3>
+  <pre>{{ lti_vars_str }}</pre>
+</div>
+{% endblock %}
