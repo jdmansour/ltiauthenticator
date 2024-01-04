@@ -6,17 +6,17 @@
   <h1>Create Link</h1>
   <p>You are about to create a link to this JupyterHub in your LMS '{{ tool_consumer_instance_name }}'.</p>
 
-  <h2>Option 1: <small>Open JupyterHub</small></h2>
+  <h2>Plain Link <small>Open JupyterHub</small></h2>
 
   <form class="form-inline" action="{{ return_url }}" method="post" encType="application/x-www-form-urlencoded">
     {% for key, value in response_params %}
     <input type="hidden" name="{{ key }}" value="{{ value }}">
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Create Link</button>
+    <button type="submit" class="btn btn-primary">Create plain link</button>
 
   </form>
 
-  <h2>Option 2: <small>Open JupyterHub and check out Git repository</small></h2>
+  <h2>Git Link <small>Open JupyterHub and check out Git repository</small></h2>
 
   <p>Use nbgitpuller to check out a Git repository automatically.</p>
 
@@ -123,7 +123,7 @@ var options = {
 
     <div class="form-group" id="app-container">
       <div class="col-sm-2 control-label">
-        <label for="app" class=>Application to Open</label>
+        <label for="app" class=>Application to open</label>
         <small class="form-text text-muted">
         </small>
       </div>
@@ -160,13 +160,19 @@ var options = {
 
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary">Create Link</button>
+        <button type="submit" class="btn btn-primary">Create Git link</button>
       </div>
     </div>
 
   </form>
 
-  <h3>Debugging Information <small>LTI Vars</small></h3>
-  <pre>{{ lti_vars_str }}</pre>
+  <h3>Debugging Information</h3>
+
+  <p><button expanded="true" class="btn btn-default" type="button" data-toggle="collapse"
+      data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Toggle LTI Vars
+    </button></p>
+  <pre class="collapse" id="collapseExample">{{ lti_vars_str }}</pre>
+
 </div>
 {% endblock %}

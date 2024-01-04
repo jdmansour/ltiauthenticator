@@ -12,7 +12,12 @@
     <button type="submit" class="btn btn-primary">Create Link</button>
   </form>
 
-  <h3>LTI Vars</h3>
-  <pre>{{ lti_vars_str }}</pre>
+  <h3>Debugging information</h3>
+  <p><button expanded="true" class="btn btn-default" type="button" data-toggle="collapse"
+    data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Toggle LTI Vars
+  </button></p>
+  <pre class="collapse" id="collapseExample">{{ lti_vars_str }}</pre>
+
 </div>
 {% endblock %}
