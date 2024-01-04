@@ -54,6 +54,15 @@ class LTI11AuthenticateHandler(BaseHandler):
         return
 
     @gen.coroutine
+    def get(self):
+        self.log.info("Showing the login page.....")
+        html = yield self.render_template(
+            "templates/page.html",
+            announcement="Please log in via your LMS."
+        )
+        self.finish(html)
+
+    @gen.coroutine
     def post(self):
         """
         Technical reference of relevance to understand this function
